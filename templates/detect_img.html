@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+
+<head>
+  <link rel="stylesheet" media="screen" href = "{{ url_for('static', filename='bootstrap.min.css') }}">
+  <meta name="viewport" content = "width=device-width, initial-scale=1.0">
+  <title> Deteced Image Check web app</title>
+  <style>
+    body{
+        margin-bottom: 5mm;
+    }
+  </style>
+</head>
+
+<body>
+<center>
+<div class="container-fluid">
+
+<h5>Deteced Image Check</h5>
+<br>
+<br>
+<h4>Last Updated Time:</h4>
+{{img_dict['updated_time']}}
+
+<br>
+<br>
+<table border =1 >
+  <tr>
+  {% for key in param %} 
+   <th>{{key}}</th>
+  {% endfor %}
+  </tr>
+
+  <tr>
+  {% for value in param.itervalues() %}
+   <td> {{ value}} </td>
+  {% endfor %}
+  </tr>
+
+</table>
+
+<br>
+<br>
+<h4>Image:</h4>
+<img src="data:image/jpeg;base64,{{img_dict['img_str']}}" style="max-width: 350px;">
+<!--<input action="action" onclick="window.history.go(-1); return false;" type="button" value="Go back to previous page" />
+-->
+<br>
+<!--<a href="http://192.168.1.64:5000" type="button">New Para Tuning</a>-->
+
+</div>
+</center>
+</body>
+
+</html>
