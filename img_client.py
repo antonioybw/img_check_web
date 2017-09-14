@@ -4,7 +4,7 @@ import requests
 from datetime import datetime
 import base64
 # img_dict = [{'input': 'hi', 'topic': 'Greeting'}]
-with open("iphone.jpg", "rb") as imageFile:
+with open("huawei.png", "rb") as imageFile:
   img_str = base64.b64encode(imageFile.read())
 img_dict = {'updated_time':str(datetime.now()), 'img_str':img_str}
 img_json = json.dumps(img_dict)
