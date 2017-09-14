@@ -22,8 +22,8 @@
 
 <table border =0 >
   <tr>
-   <th><h5>Last Updated Time:</h5></th>
-   <td>{{img_dict['updated_time']}}</th>
+   <th><h5>Images Creation Time:</h5></th>
+   <td>{{img_list[0]['create_time']}}</th>
   </tr>
 
   <tr>
@@ -34,9 +34,8 @@
 </table>
 
 
-<!-- {{img_dict['updated_time']}}
-<h4>Current Time:</h4>
-<span id="time"></span> -->
+<br>
+<input type="button" value="Refresh Page" onClick="window.location.reload()">
 <br>
 <br>
 <table border =1 >
@@ -57,13 +56,16 @@
 <br>
 <br>
 <h4>Image:</h4>
-<img src="data:image/jpeg;base64,{{img_dict['img_str']}}" style="max-width: 350px;">
-<!--<input action="action" onclick="window.history.go(-1); return false;" type="button" value="Go back to previous page" />
--->
+
+{% for img in img_list %} 
+   <img src="data:image/jpeg;base64,{{img['img_str']}}" style="max-width: 350px;">
+   <br>
+{% endfor %}
+
 <br>
 <br>
 <br>
-<input type="button" value="Refresh Page" onClick="window.location.reload()">
+
 <!--<a href="http://192.168.1.64:5000" type="button">New Para Tuning</a>-->
 
 </div>
