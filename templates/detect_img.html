@@ -23,12 +23,19 @@
 <table border =0 >
   <tr>
    <th><h5>Images Creation Time:</h5></th>
-   <td>{{img_list[0]['create_time']}}</th>
+   <td>  <div id="c_time">
+        {% if img_list | length > 0 %}
+      {{img_list[0]['create_time']}}
+       {%else%}
+       No Image Detected Now
+        {%endif%}
+        </div> 
+        </td>
   </tr>
 
   <tr>
    <th><h5>Current Time:</h5></th>
-   <td><span id="time"></span></th>
+   <td><span id="time"></span></td>
   </tr>
 
 </table>
@@ -38,35 +45,27 @@
 <input type="button" value="Refresh Page" onClick="window.location.reload()">
 <br>
 <br>
-<table border =1 >
-  <tr>
-  {% for key in param %} 
-   <th>{{key}}</th>
-  {% endfor %}
-  </tr>
 
-  <tr>
-  {% for value in param.itervalues() %}
-   <td> {{ value}} </td>
-  {% endfor %}
-  </tr>
-
-</table>
 
 <br>
 <br>
 <h4>Image:</h4>
 
+
+<div id="image_area">
+
 {% for img in img_list %} 
-   <img src="data:image/jpeg;base64,{{img['img_str']}}" style="max-width: 350px;">
+   <img src='/static/img/{{img['img_path']}}' style='max-width: 350px';>
    <br>
 {% endfor %}
+</div>
+
+
 
 <br>
 <br>
 <br>
 
-<!--<a href="http://192.168.1.64:5000" type="button">New Para Tuning</a>-->
 
 </div>
 </center>
@@ -74,7 +73,41 @@
 
 </html>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+    socket.on('connect', function() {
+        console.log("client side on connect")
+    });
+
+
+    
+    socket.on('post detected', function(data) {
+        console.log("got post from client, there's new image in dump path!");
+        $('#image_area').empty();
+        var img_list=data['img_list'];
+        //console.log(data);
+        var updated_time =data['client_message']['updated_time'];
+        //var dict_from_post= data['client_message'']
+        $('#c_time').text(updated_time)
+        console.log(img_list)
+        for (var i in img_list){
+          $( "#image_area" ).append( "<img src='/static/img/"+img_list[i]['img_path']+"' style='max-width: 350px';>");
+          $( "#image_area" ).append( "<br>" );
+        }
+        $( "#image_area" ).append( data['client_message']['face_name_list'][0] );
+       // var dict_from_post =data['client_message'];
+       // var updated_time =dict_from_post['updated_time'];       
+        //$('#c_time').text(updated_time);
+    });
+</script>
+
+
+
+
 <script type="text/javascript">
 var today = new Date();
  document.getElementById('time').innerHTML=today;
  </script>
+
