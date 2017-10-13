@@ -28,5 +28,5 @@ message_dict = {'updated_time':str(datetime.now()), 'event':'new_img', 'img_str_
 # message_dict = {'updated_time':str(datetime.now()), 'event':'new_img', 'ms':'hahahahaha'}
 message_json = json.dumps(message_dict)
 
-res = requests.post("http://127.0.0.1:15020/pic", json=message_json)
+res = requests.post("http://192.168.1.64:15020/pic", json=message_json)
 print("normal pic transferred``")

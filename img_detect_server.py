@@ -18,7 +18,7 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
 
-detect_img_path='/root/workspace/detect_img_web/static/img/'
+detect_img_path='/root/workspace/img_check_web/static/img/'
 
 def find_img_list():
   img_list=[]
@@ -37,7 +37,7 @@ def find_img_list():
 def get_img():
   if not os.path.exists(detect_img_path):
     return "img path not exists"
-  subprocess.check_output("rm -rf /root/workspace/detect_img_web/static/img/*",shell=True)
+  subprocess.check_output("rm -rf /root/workspace/img_check_web/static/img/*",shell=True)
   img_list=find_img_list()
 
   if request.method == 'POST':
@@ -47,14 +47,14 @@ def get_img():
     print " got post from client"
     print "image string type is"
     print type(message_dict['img_str_list'][0])
-    subprocess.check_output("rm -rf /root/workspace/detect_img_web/static/img/*",shell=True)
+    subprocess.check_output("rm -rf /root/workspace/img_check_web/static/img/*",shell=True)
     if 'img_str_list' in message_dict:
       img_base64_list = message_dict['img_str_list']
       for idx,item in enumerate(img_base64_list):
         #if isinstance(item,unicode):
          # print "reach type:"
           #print type(item)
-          #with open('/root/workspace/detect_img_web/static/img/new_img'+str(idx)+str(time.time())+'.png', 'w') as img_file:
+          #with open('/root/workspace/img_check_web/static/img/new_img'+str(idx)+str(time.time())+'.png', 'w') as img_file:
             #img_file.write(item.decode('base64'))
         #else: 
         print "reach type:"
@@ -69,9 +69,9 @@ def get_img():
         print np_array.shape
         print "type from string"
         print type(np_array)
-        misc.imsave('/root/workspace/detect_img_web/static/img/new_img'+str(idx)+str(time.time())+'.png', np_array)
+        misc.imsave('/root/workspace/img_check_web/static/img/new_img'+str(idx)+str(time.time())+'.png', np_array)
         #img = scipy.misc.toimage(np_array)
-        #img.save('/root/workspace/detect_img_web/static/img/new_img'+str(idx)+str(time.time())+'.png')
+        #img.save('/root/workspace/img_check_web/static/img/new_img'+str(idx)+str(time.time())+'.png')
             
     if (message_dict['event']=='new_img'):
       img_list=find_img_list()
@@ -102,13 +102,13 @@ def get_normal_pic():
     print " got post from client"
     print "image string type is"
     print type(message_dict['img_str_list'][0])
-    subprocess.check_output("rm -rf /root/workspace/detect_img_web/static/img/*",shell=True)
+    subprocess.check_output("rm -rf /root/workspace/img_check_web/static/img/*",shell=True)
     if 'img_str_list' in message_dict:
       img_base64_list = message_dict['img_str_list']
       for idx,item in enumerate(img_base64_list):
         print "reach type:"
         print type(item)
-        with open('/root/workspace/detect_img_web/static/img/new_img'+str(idx)+str(time.time())+'.png', 'w') as img_file:
+        with open('/root/workspace/img_check_web/static/img/new_img'+str(idx)+str(time.time())+'.png', 'w') as img_file:
           img_file.write(base64.b64decode(item))
         
             
@@ -122,7 +122,7 @@ def get_normal_pic():
 
 
 @app.route('/show_path_img', methods = ['GET','POST']) # 
-def get_img():
+def get_img_from_path():
   detect_img_path='/tmp/detected_face/'
   cfg_file_path='/tmp/cfg'
   if not os.path.exists(detect_img_path):

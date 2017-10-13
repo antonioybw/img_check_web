@@ -1,0 +1,36 @@
+.img_format{
+  max-height:200px; 
+  max-width:200px; 
+  /*vertical-align:middle;*/
+  width:auto;
+  height:auto;
+  /*padding-top:50%;
+  padding-bottom:50%;*/
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+  margin:auto;
+}
+
+.img_block{
+/*  height:500px;
+  width:500px;*/
+  /*padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  padding-right: 10px;*/
+  /*border-style: solid ;*/
+  border: solid  #6AC5AC 3px;
+  /*margin-bottom: 15px;*/
+}
+
+.label{
+  position: absolute;
+  left:0;
+  background-color: #6AC5AC;
+  color: #414142;
+  line-height: 1em;
+
+}

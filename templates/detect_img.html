@@ -3,6 +3,7 @@
 
 <head>
   <link rel="stylesheet" media="screen" href = "{{ url_for('static', filename='bootstrap.min.css') }}">
+  <link rel="stylesheet" media="screen" href = "{{ url_for('static', filename='my_style.css') }}">
   <meta name="viewport" content = "width=device-width, initial-scale=1.0">
   <title> Deteced Image Check web app</title>
   <style>
@@ -42,7 +43,7 @@
 
 
 <br>
-<input type="button" value="Refresh Page" onClick="window.location.reload()">
+<input type="button" value="Clear Page" onClick="window.location.reload()">
 <br>
 <br>
 
@@ -52,12 +53,14 @@
 <h4>Image:</h4>
 
 
-<div id="image_area">
-
-{% for img in img_list %} 
-   <img src='/static/img/{{img['img_path']}}' style='max-width: 350px';>
-   <br>
-{% endfor %}
+<div  class="container-fluid">
+  <div class="row" id="image_area">
+    <br>
+    {% for img in img_list %} 
+       <div class='col-sm-6 col-md-4'><img src='/static/img/{{img['img_path']}}' style='max-width: 250px';></div>
+       <br>
+    {% endfor %}
+  </div>
 </div>
 
 
@@ -76,6 +79,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
 <script type="text/javascript" charset="utf-8">
+    // $('#image_area').empty();
+    var cur_col_num=0;
     var socket = io.connect('http://' + document.domain + ':' + location.port);
     socket.on('connect', function() {
         console.log("client side on connect")
@@ -85,7 +90,7 @@
     
     socket.on('post detected', function(data) {
         console.log("got post from client, there's new image in dump path!");
-        $('#image_area').empty();
+        
         var img_list=data['img_list'];
         //console.log(data);
         var updated_time =data['client_message']['updated_time'];
@@ -93,10 +98,29 @@
         $('#c_time').text(updated_time)
         console.log(img_list)
         for (var i in img_list){
-          $( "#image_area" ).append( "<img src='/static/img/"+img_list[i]['img_path']+"' style='max-width: 350px';>");
-          $( "#image_area" ).append( "<br>" );
+          
+          // $( "#image_area" ).append( "<img src='/static/img/"+img_list[i]['img_path']+"' class='col-sm-6 col-md-4' style='max-width: 350px';>");
+          $( "#image_area" ).append("");
+          $( "#image_area" ).append("\
+            <div class='col-sm-6 col-md-4 img_block'>\
+              <span class='label'>Dummy Name</span>\
+              <div style='height:300px;'>\
+                <center></center>\
+                <img src='/static/img/"+img_list[i]['img_path']+"' class='img_format'>\
+              </div>\
+            </div>");
+          
+          
+          //style='max-height:150px; max-width:150px; width:auto ;height:auto;'
+          // $( "#image_area" ).append( "<img src='/static/img/"+img_list[i]['img_path']+"' class='col-sm-6 col-md-4' style='max-height:150px>");
+          cur_col_num++;
+          if(cur_col_num==3){
+            $( "#image_area" ).append( "<div class='col-md-12'><div style='margin-top:50px'></div></div>" );
+            cur_col_num=0
+          }
+          // $( "#image_area" ).append( "<br>" );
         }
-        $( "#image_area" ).append( data['client_message']['face_name_list'][0] );
+        //$( "#image_area" ).append( data['client_message']['face_name_list'][0] );
        // var dict_from_post =data['client_message'];
        // var updated_time =dict_from_post['updated_time'];       
         //$('#c_time').text(updated_time);
