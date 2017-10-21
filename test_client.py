@@ -7,7 +7,7 @@ import base64
 from scipy import misc
 import base64
 import json
-
+##
 if(len(sys.argv)<2):
   print("add one argument about which file to dump to show folder, camera01.png ~ camera13.png")
   exit()
@@ -28,5 +28,5 @@ message_dict = {'updated_time':str(datetime.now()), 'event':'new_img', 'img_str_
 # message_dict = {'updated_time':str(datetime.now()), 'event':'new_img', 'ms':'hahahahaha'}
 message_json = json.dumps(message_dict)
 
-res = requests.post("http://192.168.1.64:15020/pic", json=message_json)
+res = requests.post("http://172.17.0.9:15020/pic", json=message_json)
 print("normal pic transferred``")

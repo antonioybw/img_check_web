@@ -103,7 +103,7 @@
           $( "#image_area" ).append("");
           $( "#image_area" ).append("\
             <div class='col-sm-6 col-md-4 img_block'>\
-              <span class='label'>Dummy Name</span>\
+              <div class='label'>{{data['client_message']['face_name_list'][0]}}</div>\
               <div style='height:300px;'>\
                 <center></center>\
                 <img src='/static/img/"+img_list[i]['img_path']+"' class='img_format'>\
@@ -111,6 +111,9 @@
             </div>");
           
           
+          // <div class='label'>"+img_list[i]['create_time']+"</div>\
+          //     <div class='label'> Name: "+data['client_message']['face_name_list'][i]+"</div>\
+
           //style='max-height:150px; max-width:150px; width:auto ;height:auto;'
           // $( "#image_area" ).append( "<img src='/static/img/"+img_list[i]['img_path']+"' class='col-sm-6 col-md-4' style='max-height:150px>");
           cur_col_num++;
