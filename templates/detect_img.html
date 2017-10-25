@@ -103,7 +103,7 @@
           $( "#image_area" ).append("");
           $( "#image_area" ).append("\
             <div class='col-sm-6 col-md-4 img_block'>\
-              <div class='label'>{{data['client_message']['face_name_list'][0]}}</div>\
+              <div class='label'>"+data['client_message']['face_name_list'][0]+"</div>\
               <div style='height:300px;'>\
                 <center></center>\
                 <img src='/static/img/"+img_list[i]['img_path']+"' class='img_format'>\

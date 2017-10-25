@@ -35,6 +35,7 @@ def find_img_list():
 
 @app.route('/', methods = ['GET','POST']) # 
 def get_img():
+  subprocess.call('mkdir '+ detect_img_path,shell=True)
   if not os.path.exists(detect_img_path):
     return "img path not exists"
   subprocess.check_output("rm -rf /root/workspace/img_check_web/static/img/*",shell=True)
