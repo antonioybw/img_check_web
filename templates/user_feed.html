@@ -1,0 +1,238 @@
+<!doctype html>
+<html>
+
+<head>
+  <link rel="stylesheet" media="screen" href = "{{ url_for('static', filename='bootstrap.min.css') }}">
+  <link rel="stylesheet" media="screen" href = "{{ url_for('static', filename='my_style.css') }}">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+  <meta name="viewport" content = "width=device-width, initial-scale=1.0">
+  <title> User feed, detected image</title>
+  <style>
+    body{
+        margin-bottom: 5mm;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container-fluid">
+  <!-- <div class="row"> -->
+    <center style="padding-bottom: 20px">
+    <h5 class="display-4">User Feed Deteced Image Check</h5>
+    <br>
+    <br>
+      <span class="lead">Current Time: </span><span id="time"></span>
+      <br>
+      <input type="button" value="Clear Page" onClick="window.location.reload()">
+    </center>
+  <!-- </div> -->
+    
+  <div class="row">
+    <div class="col-sm-3">
+      <div class="lead">User Profile</div></br>
+
+    </div>
+    <div class="col-sm-3">
+
+      <div class="FixedHeightContainer" style="background:#AED18B;">
+        <h3>White List</h3>
+        <div class="Content" id="white_content">
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="FixedHeightContainer" style="background:#ff7474;">
+        <h3>Black List</h3>
+        <div class="Content" id="black_content">
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="FixedHeightContainer" style="background:#A59E9D;">
+        <h3>Unknown List</h3>
+        <div class="Content" id="unknown_content">
+        </div>
+      </div>
+    </div>
+  </div > <!-- end of row -->
+</div><!-- end of user profile container -->
+
+
+  
+
+  
+
+
+  <br>
+  
+  <br>
+  <br>
+
+
+  <br>
+  <br>
+  
+
+  <!-- <div class="row">
+    <div class="col-sm-3">
+    
+    </div>
+    <div class="col-sm-9 image_feed_box">
+    </div>
+  </div> -->
+
+
+
+<div  class="container-fluid">
+  <h4 class="lead">Image Feed:</h4>
+  <div id="image_area">
+    <!-- {% for img in img_list %} 
+       <div class='col-sm-6 col-md-4'><img src='/static/img/{{img['img_path']}}' style='max-width: 250px';></div>
+       <br>
+    {% endfor %} -->
+  </div>
+</div>
+
+
+
+
+
+
+</body>
+
+</html>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+    // $('#image_area').empty();
+    var cur_col_num=0;
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+    socket.on('connect', function() {
+        console.log("client side on connect")
+    });
+
+    var w_docs={{ w_list| tojson}};
+    var b_docs={{ b_list| tojson}};
+    var u_docs={{ u_list| tojson}};
+    console.log("print now");
+    console.log(w_docs);
+    console.log(b_docs);
+    console.log(u_docs);
+    console.log("after print");
+
+    for (var i in b_docs){
+      $('#black_content').append(`
+        <div class='row'>
+          <div class='col-sm-3'>
+            <img src='/static/img/black/new_img_`+b_docs[i]['face_id']+`.png' class='thumb_img'>
+          </div>
+          <div class='col-sm-9' style='font-size: small'>
+            name: `+b_docs[i]['face_name']+`<br>
+            last detected time:`+b_docs[i]['detected_time_list'][0]+`<br>
+          </div>
+        </div> 
+        <hr>
+        `);
+    };
+
+    for (var i in w_docs){
+      $('#white_content').append(`
+        <div class='row'>
+          <div class='col-sm-3'>
+            <img src='/static/img/white/new_img_`+w_docs[i]['face_id']+`.png' class='thumb_img'>
+          </div>
+          <div class='col-sm-9' style='font-size: small'>
+            name: `+w_docs[i]['face_name']+`<br>
+            last detected time:`+w_docs[i]['detected_time_list'][0]+`<br>
+          </div>
+        </div> 
+        <hr>
+        `);
+    };
+    
+
+
+    /*
+        <hr>\
+        <div class='row'>\
+        <img src='/static/img/black/new_img_"+b_docs[0]['face_id']+".png' class='thumb_img'>\
+        "+b_docs[i]['face_name']+"<br>\
+        "+b_docs[i]['detected_time_list']+"<br>\
+        </div>\ 
+    */
+    
+    socket.on('post detected', function(data) {
+        console.log("got post from client, there's new image in dump path!");
+        
+        var img_list=data['img_list'];
+        //console.log(data);
+        var updated_time =data['client_message']['updated_time'];
+        //var dict_from_post= data['client_message'']
+        $('#c_time').text(updated_time)
+        console.log(img_list)
+        for (var i in img_list){
+          
+          // $( "#image_area" ).append( "<img src='/static/img/"+img_list[i]['img_path']+"' class='col-sm-6 col-md-4' style='max-width: 350px';>");
+          $( "#image_area" ).append(`
+            <div class='row'>
+              <div class='col-sm-3'>
+              </div>
+              <div class='col-sm-9 image_feed_box'>
+                <div class='row'>
+                  <div class='col-sm-3'>
+                    <img src='/static/img/`+img_list[i]['img_path']+`' class='img_format'>
+                  </div>
+                  <div class='col-sm-3'>
+                    type:`+data['client_message']['type']`
+                    name:`+data['client_message']['face_name_list'].length >0 ? data['client_message']['face_name_list'][0]:'unknown'+`
+                    detected time:`+data['client_message']['updated_time']+`
+                  </div>
+                  <div class='col-sm-3'>
+                    put to white?<br>
+                    put to black?
+                  </div>
+
+
+                  <div class='label'>`+data['client_message']['face_name_list'][0]+`
+                  </div>
+                  <div style='height:300px;'>
+                    <img src='/static/img/`+img_list[i]['img_path']+`' class='img_format'>
+                  </div>
+
+
+                </div>
+                
+              </div>
+            </div>
+            `);
+          
+          
+          // <div class='label'>"+img_list[i]['create_time']+"</div>\
+          //     <div class='label'> Name: "+data['client_message']['face_name_list'][i]+"</div>\
+
+          //style='max-height:150px; max-width:150px; width:auto ;height:auto;'
+          // $( "#image_area" ).append( "<img src='/static/img/"+img_list[i]['img_path']+"' class='col-sm-6 col-md-4' style='max-height:150px>");
+          cur_col_num++;
+          if(cur_col_num==3){
+            $( "#image_area" ).append( "<div class='col-md-12'><div style='margin-top:50px'></div></div>" );
+            cur_col_num=0
+          }
+          // $( "#image_area" ).append( "<br>" );
+        }
+        //$( "#image_area" ).append( data['client_message']['face_name_list'][0] );
+       // var dict_from_post =data['client_message'];
+       // var updated_time =dict_from_post['updated_time'];       
+        //$('#c_time').text(updated_time);
+    });
+</script>
+
+
+
+
+<script type="text/javascript">
+var today = new Date();
+ document.getElementById('time').innerHTML=today;
+ </script>
+
