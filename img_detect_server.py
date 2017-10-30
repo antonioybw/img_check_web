@@ -19,7 +19,7 @@ import urllib
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
-
+#
 
 detect_img_path='/root/workspace/img_check_web/static/img/detected/'
 white_img_path='/root/workspace/img_check_web/static/img/white/'
