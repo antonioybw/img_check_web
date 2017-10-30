@@ -21,7 +21,7 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
 
-detect_img_path='/root/workspace/img_check_web/static/img/'
+detect_img_path='/root/workspace/img_check_web/static/img/detected/'
 white_img_path='/root/workspace/img_check_web/static/img/white/'
 black_img_path='/root/workspace/img_check_web/static/img/black/'
 unknown_img_path='/root/workspace/img_check_web/static/img/unknown/'
@@ -40,13 +40,14 @@ unknownlist=db.unknown_list_test
 def init_path():
   path_all=[detect_img_path,white_img_path,black_img_path,unknown_img_path]
   for each in path_all:
-    subprocess.call('mkdir '+ each, shell=True)
+    if not os.path.exists(each):
+      subprocess.call('mkdir '+ each, shell=True)
     if not os.path.exists(each):
       return "img path not exists"
     subprocess.check_output("rm -rf "+each+"*",shell=True)
 
 
-def find_img_list():
+def find_img_list(detect_img_path=detect_img_path):
   img_list=[]
   for file in os.listdir(detect_img_path):
     if file.endswith('.png') or file.endswith('.jpg'):
@@ -58,6 +59,7 @@ def find_img_list():
       img_list.append({'create_time':create_time,'img_path':file})
   return img_list
 
+
 def save_image_to_static(img_str,save_path,img_id):
   item_b64_dec = base64.b64decode(img_str)
   with open(save_path+'new_img_'+img_id+'.png','wb') as imgfile:
@@ -66,11 +68,7 @@ def save_image_to_static(img_str,save_path,img_id):
   # np_array = np_array.reshape((160, 160, 3))
   # misc.imsave(save_path+'new_img_'+img_id+'.png', item_b64_dec)
 
-@app.route('/', methods = ['GET','POST']) # 
-def user_feed():
-  # sanity check about image path
-  init_path()
-  
+def get_three_list():
   # get database list to display
   w_docs=whitelist.find()
   b_docs=blacklist.find()
@@ -86,8 +84,15 @@ def user_feed():
     b_list.append({'face_name':each_b['face_name'],'detected_time_list':each_b['detected_time_list'],'face_id':str(each_b['_id'])})
   for each_u in u_docs:
     save_image_to_static(each_u['face_icon'],unknown_img_path,str(each_u['_id']))
-    u_list.append({'detected_time_list':each_u['detected_time_list'],'face_id':str(each_u['_id'])})
+    u_list.append({'face_name':each_u['face_name'],'detected_time_list':each_u['detected_time_list'],'face_id':str(each_u['_id'])})
+  return (w_list,b_list,u_list)
 
+
+@app.route('/', methods = ['GET','POST']) # 
+def user_feed():
+  # sanity check about image path
+  init_path()
+  list_tuple=get_three_list();
   if request.method == 'POST':
     incoming_jsondata=request.get_json()
     message_dict=json.loads(incoming_jsondata)
@@ -95,31 +100,19 @@ def user_feed():
     print " got post from client"
     print "image string type is"
     print type(message_dict['img_str_list'][0])
-    subprocess.check_output("rm -rf /root/workspace/img_check_web/static/img/*",shell=True)
+    subprocess.check_output("rm -rf /root/workspace/img_check_web/static/img/detected/*",shell=True)
     if 'img_str_list' in message_dict:
       img_base64_list = message_dict['img_str_list']
       for idx,item in enumerate(img_base64_list):
-        #if isinstance(item,unicode):
-         # print "reach type:"
-          #print type(item)
-          #with open('/root/workspace/img_check_web/static/img/new_img'+str(idx)+str(time.time())+'.png', 'w') as img_file:
-            #img_file.write(item.decode('base64'))
-        #else: 
-        print "reach type:"
-        print type(item)
-        print 'item', item
-        item_b64_dec = base64.b64decode(item)
-        print 'type, item b64 dec', type(item_b64_dec) 
-        np_array = numpy.fromstring(item_b64_dec, numpy.uint8) 
-        np_array = np_array.reshape((160, 160, 3))
-        #item_b64_dec_np = numpy.fromstring(item_b64_dec) 
-        #np_array=numpy.fromstring(item.decode('base64'))
-        print np_array.shape
-        print "type from string"
-        print type(np_array)
-        misc.imsave('/root/workspace/img_check_web/static/img/new_img'+str(idx)+str(time.time())+'.png', np_array)
-        #img = scipy.misc.toimage(np_array)
-        #img.save('/root/workspace/img_check_web/static/img/new_img'+str(idx)+str(time.time())+'.png')
+        if message_dict['img_type']=='basic_base64':
+          with open('/root/workspace/img_check_web/static/img/detected/'+str(idx)+str(time.time())+'.png', 'w+') as img_file:
+            img_file.write(base64.b64decode(item))
+        else: 
+          item_b64_dec = base64.b64decode(item)
+          np_array = numpy.fromstring(item_b64_dec, numpy.uint8) 
+          np_array = np_array.reshape((160, 160, 3))
+          misc.imsave('/root/workspace/img_check_web/static/img/detected/new_img'+str(idx)+str(time.time())+'.png', np_array)
+        
             
     if (message_dict['event']=='new_img'):
       img_list=find_img_list()
@@ -127,61 +120,48 @@ def user_feed():
       send_to_client['client_message']=message_dict
       send_to_client['img_list']=img_list
       socketio.emit('post detected',send_to_client)
-  return render_template('user_feed.html',w_list=w_list,b_list=b_list,u_list=u_list)
+  return render_template('user_feed.html',w_list=list_tuple[0],b_list=list_tuple[1],u_list=list_tuple[2])
   # return render_template('user_feed.html',b_list=b_list)
   # return render_template('user_feed.html',w_docs=w_docs,b_docs=b_docs,u_docs=u_docs)
   # return render_template('user_feed.html',w_dic=w_dic,b_dic=b_dic,u_dic=u_dic)
 
 
 
-@app.route('/display', methods = ['GET','POST']) # 
-def get_img():
-  subprocess.call('mkdir '+ detect_img_path,shell=True)
-  if not os.path.exists(detect_img_path):
-    return "img path not exists"
-  subprocess.check_output("rm -rf /root/workspace/img_check_web/static/img/*",shell=True)
-  img_list=find_img_list()
+# @app.route('/display', methods = ['GET','POST']) # 
+# def get_img():
+#   subprocess.call('mkdir '+ detect_img_path,shell=True)
+#   if not os.path.exists(detect_img_path):
+#     return "img path not exists"
+#   subprocess.check_output("rm -rf /root/workspace/img_check_web/static/img/*",shell=True)
+#   img_list=find_img_list()
 
-  if request.method == 'POST':
-    incoming_jsondata=request.get_json()
-    message_dict=json.loads(incoming_jsondata)
-    ### once there's new image uploaded
-    print " got post from client"
-    print "image string type is"
-    print type(message_dict['img_str_list'][0])
-    subprocess.check_output("rm -rf /root/workspace/img_check_web/static/img/*",shell=True)
-    if 'img_str_list' in message_dict:
-      img_base64_list = message_dict['img_str_list']
-      for idx,item in enumerate(img_base64_list):
-        #if isinstance(item,unicode):
-         # print "reach type:"
-          #print type(item)
-          #with open('/root/workspace/img_check_web/static/img/new_img'+str(idx)+str(time.time())+'.png', 'w') as img_file:
-            #img_file.write(item.decode('base64'))
-        #else: 
-        print "reach type:"
-        print type(item)
-        print 'item', item
-        item_b64_dec = base64.b64decode(item)
-        print 'type, item b64 dec', type(item_b64_dec) 
-        np_array = numpy.fromstring(item_b64_dec, numpy.uint8) 
-        np_array = np_array.reshape((160, 160, 3))
-        #item_b64_dec_np = numpy.fromstring(item_b64_dec) 
-        #np_array=numpy.fromstring(item.decode('base64'))
-        print np_array.shape
-        print "type from string"
-        print type(np_array)
-        misc.imsave('/root/workspace/img_check_web/static/img/new_img'+str(idx)+str(time.time())+'.png', np_array)
-        #img = scipy.misc.toimage(np_array)
-        #img.save('/root/workspace/img_check_web/static/img/new_img'+str(idx)+str(time.time())+'.png')
+#   if request.method == 'POST':
+#     incoming_jsondata=request.get_json()
+#     message_dict=json.loads(incoming_jsondata)
+#     ### once there's new image uploaded
+#     print " got post from client"
+#     print "image string type is"
+#     print type(message_dict['img_str_list'][0])
+#     subprocess.check_output("rm -rf /root/workspace/img_check_web/static/img/*",shell=True)
+#     if 'img_str_list' in message_dict:
+#       img_base64_list = message_dict['img_str_list']
+#       for idx,item in enumerate(img_base64_list):
+#         if message_dict['img_type']=='basic_base64':
+#           with open('/root/workspace/img_check_web/static/img/new_img'+str(idx)+str(time.time())+'.png', 'w') as img_file:
+#             img_file.write(item.decode('base64'))
+#         else: 
+#           item_b64_dec = base64.b64decode(item)
+#           np_array = numpy.fromstring(item_b64_dec, numpy.uint8) 
+#           np_array = np_array.reshape((160, 160, 3))
+#           misc.imsave('/root/workspace/img_check_web/static/img/new_img'+str(idx)+str(time.time())+'.png', np_array)
             
-    if (message_dict['event']=='new_img'):
-      img_list=find_img_list()
-      send_to_client={}
-      send_to_client['client_message']=message_dict
-      send_to_client['img_list']=img_list
-      socketio.emit('post detected',send_to_client)
-  return render_template('detect_img.html',img_list=img_list)
+#     if (message_dict['event']=='new_img'):
+#       img_list=find_img_list()
+#       send_to_client={}
+#       send_to_client['client_message']=message_dict
+#       send_to_client['img_list']=img_list
+#       socketio.emit('post detected',send_to_client)
+#   return render_template('detect_img.html',img_list=img_list)
 
 
 @app.route('/info', methods = ['POST']) # 
@@ -191,6 +171,7 @@ def get_message():
     message_dict=json.loads(incoming_jsondata)
     print message_dict
     return "ok"
+    
 @app.route('/test')
 def show():
   return 'haha'
@@ -252,9 +233,38 @@ def get_img_from_path():
   return render_template('detect_img.html',img_list=img_list,param=param_dict)
   
 
+# socket on part, receive data from client
 @socketio.on('my event')
 def test_message(message):
     emit('my response', {'data': message['data']})
+
+@socketio.on('insert_list')
+def insert_to_database(message):
+  db_toinsert=whitelist
+  img_path=white_img_path
+  if message['insert_type']=='white':
+    db_toinsert=whitelist
+    img_path=white_img_path
+  elif message['insert_type']=='black':
+    db_toinsert=blacklist
+    img_path=black_img_path
+  else:
+    db_toinsert=unknownlist
+    img_path=unknown_img_path
+  # here the face icon is saved from the img_str_list, since it's the first time detected
+  
+  data_toinsert={'face_name':message['insert_data']['face_name_list'][0],
+                  'face_icon':message['insert_data']['img_str_list'][0],
+                  'face_feature':message['insert_data']['face_feature'],
+                  'detected_time_list': [ message['insert_data']['updated_time']]}
+  db_toinsert.insert_one(data_toinsert)
+  all_docs=db_toinsert.find()
+  # all_docs is a db cursor not array
+  db_list=[]
+  for each in all_docs:
+    save_image_to_static(each['face_icon'],img_path,str(each['_id']))
+    db_list.append({'face_name':each['face_name'],'detected_time_list':each['detected_time_list'],'face_id':str(each['_id'])})
+  emit('update_db', {'type': message['insert_type'],'db_list':db_list})
 
 if __name__ == '__main__':
     socketio.run(app,threaded=True)

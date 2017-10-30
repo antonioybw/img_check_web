@@ -57,40 +57,17 @@
     </div>
   </div > <!-- end of row -->
 </div><!-- end of user profile container -->
-
-
-  
-
-  
-
-
-  <br>
-  
   <br>
   <br>
-
-
+  <br>
   <br>
   <br>
   
-
-  <!-- <div class="row">
-    <div class="col-sm-3">
-    
-    </div>
-    <div class="col-sm-9 image_feed_box">
-    </div>
-  </div> -->
-
 
 
 <div  class="container-fluid">
   <h4 class="lead">Image Feed:</h4>
   <div id="image_area">
-    <!-- {% for img in img_list %} 
-       <div class='col-sm-6 col-md-4'><img src='/static/img/{{img['img_path']}}' style='max-width: 250px';></div>
-       <br>
-    {% endfor %} -->
   </div>
 </div>
 
@@ -113,6 +90,10 @@
         console.log("client side on connect")
     });
 
+    // accum data for storing current incoming feed
+    var accum_data=[];
+
+    // initialize three list display
     var w_docs={{ w_list| tojson}};
     var b_docs={{ b_list| tojson}};
     var u_docs={{ u_list| tojson}};
@@ -122,110 +103,171 @@
     console.log(u_docs);
     console.log("after print");
 
-    for (var i in b_docs){
-      $('#black_content').append(`
-        <div class='row'>
-          <div class='col-sm-3'>
-            <img src='/static/img/black/new_img_`+b_docs[i]['face_id']+`.png' class='thumb_img'>
-          </div>
-          <div class='col-sm-9' style='font-size: small'>
-            name: `+b_docs[i]['face_name']+`<br>
-            last detected time:`+b_docs[i]['detected_time_list'][0]+`<br>
-          </div>
-        </div> 
-        <hr>
-        `);
-    };
+    function update_db_display(db_docs,type) {
+      $('#'+type+'_content').empty();
+      for (var i in db_docs){
+        $('#'+type+'_content').append(`
+          <div class='row'>
+            <div class='col-sm-3'>
+              <img src='/static/img/`+type+`/new_img_`+db_docs[i]['face_id']+`.png' class='thumb_img'>
+            </div>
+            <div class='col-sm-9' style='font-size: small'>
+              name: `+db_docs[i]['face_name']+`<br>
+              id: `+db_docs[i]['face_id']+`<br>
+              last detected time:`+db_docs[i]['detected_time_list'][0]+`<br>
+            </div>
+          </div> 
+          <hr>
+          `);
+      };
+    }
 
-    for (var i in w_docs){
-      $('#white_content').append(`
-        <div class='row'>
-          <div class='col-sm-3'>
-            <img src='/static/img/white/new_img_`+w_docs[i]['face_id']+`.png' class='thumb_img'>
-          </div>
-          <div class='col-sm-9' style='font-size: small'>
-            name: `+w_docs[i]['face_name']+`<br>
-            last detected time:`+w_docs[i]['detected_time_list'][0]+`<br>
-          </div>
-        </div> 
-        <hr>
-        `);
-    };
-    
+    update_db_display(w_docs,'white');
+    update_db_display(b_docs,'black');
+    update_db_display(u_docs,'unknown');
 
 
-    /*
-        <hr>\
-        <div class='row'>\
-        <img src='/static/img/black/new_img_"+b_docs[0]['face_id']+".png' class='thumb_img'>\
-        "+b_docs[i]['face_name']+"<br>\
-        "+b_docs[i]['detected_time_list']+"<br>\
-        </div>\ 
-    */
-    
+    // on new image post to this server:
     socket.on('post detected', function(data) {
         console.log("got post from client, there's new image in dump path!");
         
         var img_list=data['img_list'];
-        //console.log(data);
-        var updated_time =data['client_message']['updated_time'];
+        var info_data=data['client_message'];
+        accum_data.push(info_data);
+        var updated_time =info_data['updated_time'];
+        var face_name= info_data['type'] == 'unknown' ? 'unknown':info_data['face_name_list'][0];
+
         //var dict_from_post= data['client_message'']
         $('#c_time').text(updated_time)
+        console.log("cur accum_data:")
+        console.log(accum_data);
+        console.log("image list:")
         console.log(img_list)
+        console.log("info data:")
+        console.log(info_data)
         for (var i in img_list){
-          
-          // $( "#image_area" ).append( "<img src='/static/img/"+img_list[i]['img_path']+"' class='col-sm-6 col-md-4' style='max-width: 350px';>");
-          $( "#image_area" ).append(`
-            <div class='row'>
-              <div class='col-sm-3'>
-              </div>
-              <div class='col-sm-9 image_feed_box'>
-                <div class='row'>
-                  <div class='col-sm-3'>
-                    <img src='/static/img/`+img_list[i]['img_path']+`' class='img_format'>
-                  </div>
-                  <div class='col-sm-3'>
-                    type:`+data['client_message']['type']+`
-                    name:`+data['client_message']['face_name_list'].length >0 ? data['client_message']['face_name_list'][0]:'unknown'+`
-                    detected time:`+data['client_message']['updated_time']+`
-                  </div>
-                  <div class='col-sm-3'>
-                    put to white?<br>
-                    put to black?
-                  </div>
-
-
-                  <div class='label'>`+data['client_message']['face_name_list'][0]+`
-                  </div>
-                  <div style='height:300px;'>
-                    <img src='/static/img/`+img_list[i]['img_path']+`' class='img_format'>
-                  </div>
-
-
+          if(info_data['face_icon'].length>0){
+            $( "#image_area" ).append(`
+              <div class='row' id="block_`+accum_data.length+`">
+                <div class='col-sm-3'>
                 </div>
-                
+                <div class='col-sm-9 image_feed_box' id="box_`+accum_data.length+`">
+                  <div class='row'>
+                    <div class='col-sm-4'>
+                      **Detected Face Icon**<br>
+                      <img src='/static/img/detected/`+img_list[i]['img_path']+`' class ='detect_img'>
+                    </div>
+                    <div class='col-sm-4'>
+                      **Infomation**<br>
+                      type:`+info_data['type']+`<br>
+                      name:`+face_name+`<br>
+                      detected time:`+updated_time+`<br>
+                    </div>
+                    <div class='col-sm-4'>
+                      ** Matched Face **<br>
+                      <button id="ignore`+accum_data.length+`">Ignore</button><br>
+                      <img src='data:image/png;base64, `+info_data['face_icon']+`' class ='detect_img'>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-            `);
-          
-          
-          // <div class='label'>"+img_list[i]['create_time']+"</div>\
-          //     <div class='label'> Name: "+data['client_message']['face_name_list'][i]+"</div>\
-
-          //style='max-height:150px; max-width:150px; width:auto ;height:auto;'
-          // $( "#image_area" ).append( "<img src='/static/img/"+img_list[i]['img_path']+"' class='col-sm-6 col-md-4' style='max-height:150px>");
-          cur_col_num++;
-          if(cur_col_num==3){
-            $( "#image_area" ).append( "<div class='col-md-12'><div style='margin-top:50px'></div></div>" );
-            cur_col_num=0
+              `);
           }
-          // $( "#image_area" ).append( "<br>" );
-        }
+          else{
+            $( "#image_area" ).append(`
+              <div class='row' id="block_`+accum_data.length+`">
+                <div class='col-sm-3'>
+                </div>
+                <div class='col-sm-9 image_feed_box' id="box_`+accum_data.length+`">
+                  <div class='row'>
+                    <div class='col-sm-4'>
+                      **Detected Face Icon**<br>
+                      <img src='/static/img/detected/`+img_list[i]['img_path']+`' class ='detect_img'>
+                    </div>
+                    <div class='col-sm-4'>
+                      **Infomation**<br>
+                      type:`+info_data['type']+`<br>
+                      name:`+face_name+`<br>
+                      detected time:`+updated_time+`<br>
+                    </div>
+                    <div class='col-sm-4'>
+                      ** Next Step **<br>
+                      <button id="white_button_`+accum_data.length+`">save in whitelist</button><br>
+                      <button id="black_button_`+accum_data.length+`">save in blacklist</button><br>
+                      <button id="unknown_button_`+accum_data.length+`">save in unknownlist</button><br>
+                      <button id="ignore_`+accum_data.length+`">Ignore</button><br>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              `);
+          }
+
+          if(info_data['type']=='white'){
+              $( "#box_"+accum_data.length ).css( "border-color", "#AED18B" );
+          }
+          else if(info_data['type']=='black'){
+              $( "#box_"+accum_data.length).css( "border-color", "#ff7474" );
+          }
+          else{
+              $( "#box_"+accum_data.length ).css( "border-color", "#A59E9D" );
+          }
+          
+        } // end of for loop
         //$( "#image_area" ).append( data['client_message']['face_name_list'][0] );
        // var dict_from_post =data['client_message'];
        // var updated_time =dict_from_post['updated_time'];       
         //$('#c_time').text(updated_time);
     });
+    // end of socket on post
+
+
+
+    socket.on('update_db', function(data) {
+      var type=data['type'];
+      update_db_display(data['db_list'],type);
+    });
+
+    // $('#image_area').on('click', '#white_button_'+accum_data.length,function (){
+    //   console.log("click on button of index:");
+    //   console.log("#white_button_"+accum_data.length);
+    // });
+
+    // this function, check any click on button element inside the image_area
+    // get the id of the button, then we know which data is it and emit that data
+    $('#image_area').on('click', 'button',function (e){
+      var idClicked = e.target.id;
+      var value_arr=idClicked.split('_');
+      console.log("button click button");
+      var type=value_arr[0];
+      if(type=='ignore'){
+        var block_num=value_arr[1];
+        $("#block_"+block_num).hide();
+        return;
+      }
+      var block_num=value_arr[2];
+      var idx=value_arr[2]-1;
+      $("#block_"+block_num).hide();
+      socket.emit('insert_list', {'insert_type':type,'insert_data':accum_data[idx]});
+      console.log("inserted content:");
+      console.log({'insert_type':type,'insert_data':accum_data[idx]}); 
+
+    });
+
+    // we can also select by id or class for sure
+    // $('#image_area').on('click', '#ignore',function (e){
+    //     console.log("click on ignore");
+    //     var block_num=accum_data.length;
+    //     $("#block_"+block_num).hide();
+    // });
+
+
+
+
+
+
+
 </script>
 
 
