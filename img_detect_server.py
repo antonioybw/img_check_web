@@ -105,13 +105,15 @@ def user_feed():
       img_base64_list = message_dict['img_str_list']
       for idx,item in enumerate(img_base64_list):
         if message_dict['img_type']=='basic_base64':
-          with open('/root/workspace/img_check_web/static/img/detected/'+str(idx)+str(time.time())+'.png', 'w+') as img_file:
+          with open('/root/workspace/img_check_web/static/img/detected/new_img'+str(idx)+str(time.time())+'.png', 'w+') as img_file:
             img_file.write(base64.b64decode(item))
-        else: 
-          item_b64_dec = base64.b64decode(item)
-          np_array = numpy.fromstring(item_b64_dec, numpy.uint8) 
-          np_array = np_array.reshape((160, 160, 3))
-          misc.imsave('/root/workspace/img_check_web/static/img/detected/new_img'+str(idx)+str(time.time())+'.png', np_array)
+        else:
+          with open('/root/workspace/img_check_web/static/img/detected/new_img'+str(idx)+str(time.time())+'.png', 'w+') as img_file:
+            img_file.write(base64.b64decode(item)) 
+          # item_b64_dec = base64.b64decode(item)
+          # np_array = numpy.fromstring(item_b64_dec, numpy.uint8) 
+          # np_array = np_array.reshape((160, 160, 3))
+          # misc.imsave('/root/workspace/img_check_web/static/img/detected/new_img'+str(idx)+str(time.time())+'.png', np_array)
         
             
     if (message_dict['event']=='new_img'):
