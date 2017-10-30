@@ -61,7 +61,7 @@ def find_img_list(detect_img_path=detect_img_path):
 
 
 def save_image_to_static(img_str,save_path,img_id):
-  # item_b64_dec = base64.b64decode(img_str)
+  item_b64_dec = base64.b64decode(img_str)
   # with open(save_path+'new_img_'+img_id+'.png','wb') as imgfile:
   #   imgfile.write(item_b64_dec)
   np_array = numpy.fromstring(item_b64_dec, numpy.uint8) 
