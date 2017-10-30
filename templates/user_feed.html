@@ -192,6 +192,7 @@
                     </div>
                     <div class='col-sm-4'>
                       ** Next Step **<br>
+                      Name this face: <input id="face_name_input_`+accum_data.length+`"> <br>
                       <button id="white_button_`+accum_data.length+`">save in whitelist</button><br>
                       <button id="black_button_`+accum_data.length+`">save in blacklist</button><br>
                       <button id="unknown_button_`+accum_data.length+`">save in unknownlist</button><br>
@@ -248,6 +249,8 @@
       }
       var block_num=value_arr[2];
       var idx=value_arr[2]-1;
+      var face_name_input=$('#face_name_input_'+block_num).val();
+      accum_data[idx]['face_name_list'][0]=face_name_input;
       $("#block_"+block_num).hide();
       socket.emit('insert_list', {'insert_type':type,'insert_data':accum_data[idx]});
       console.log("inserted content:");
