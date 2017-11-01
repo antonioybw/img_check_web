@@ -168,20 +168,28 @@
                 </div>
                 <div class='col-sm-9 image_feed_box' id="box_`+accum_data.length+`">
                   <div class='row'>
-                    <div class='col-sm-4'>
+                    <div class='col-sm-3'>
                       **Detected Face Icon**<br>
                       <img src='/static/img/detected/`+img_list[i]['img_path']+`' class ='detect_img'>
                     </div>
-                    <div class='col-sm-4'>
+                    <div class='col-sm-3'>
                       **Infomation**<br>
                       type:`+info_data['type']+`<br>
                       name:`+face_name+`<br>
                       detected time:`+updated_time+`<br>
                     </div>
-                    <div class='col-sm-4'>
+                    <div class='col-sm-3'>
                       ** Matched Face **<br>
                       <img src='data:image/png;base64, `+info_data['face_icon']+`' class ='detect_img'>
                       <button id="ignore_`+accum_data.length+`">Ignore</button><br>
+                    </div>
+                    <div class='col-sm-3'>
+                      ** Next Step **<br>
+                      Modify this face: <input id="face_name_input_`+accum_data.length+`"> <br>
+                      <button id="white_button_`+accum_data.length+`">save in whitelist</button><br>
+                      <button id="black_button_`+accum_data.length+`">save in blacklist</button><br>
+                      <button id="unknown_button_`+accum_data.length+`">save in unknownlist</button><br>
+                      
                     </div>
                   </div>
                 </div>
@@ -195,17 +203,17 @@
                 </div>
                 <div class='col-sm-9 image_feed_box' id="box_`+accum_data.length+`">
                   <div class='row'>
-                    <div class='col-sm-4'>
+                    <div class='col-sm-3'>
                       **Detected Face Icon**<br>
                       <img src='/static/img/detected/`+img_list[i]['img_path']+`' class ='detect_img'>
                     </div>
-                    <div class='col-sm-4'>
+                    <div class='col-sm-3'>
                       **Infomation**<br>
                       type:`+info_data['type']+`<br>
                       name:`+face_name+`<br>
                       detected time:`+updated_time+`<br>
                     </div>
-                    <div class='col-sm-4'>
+                    <div class='col-sm-6'>
                       ** Next Step **<br>
                       Name this face: <input id="face_name_input_`+accum_data.length+`"> <br>
                       <button id="white_button_`+accum_data.length+`">save in whitelist</button><br>
