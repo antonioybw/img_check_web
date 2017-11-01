@@ -15,6 +15,7 @@ import scipy
 import pymongo
 from pymongo import MongoClient
 import urllib
+from bson import ObjectId
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -267,6 +268,20 @@ def insert_to_database(message):
     save_image_to_static(each['face_icon'],img_path,str(each['_id']))
     db_list.append({'face_name':each['face_name'],'detected_time_list':each['detected_time_list'],'face_id':str(each['_id'])})
   emit('update_db', {'type': message['insert_type'],'db_list':db_list})
+
+@socketio.on('delete_item')
+def delete_db_item(message):
+  db_todelete=whitelist
+  if message['delete_type']=='white':
+    db_todelete=whitelist
+  elif message['delete_type']=='black':
+    db_todelete=blacklist
+  else:
+    db_todelete=unknownlist
+  db_todelete.delete_one({'_id':ObjectId(message['delete_id'])})
+  emit('finish_delete', {'line_id': message['line_id']})
+
+
 
 if __name__ == '__main__':
     socketio.run(app,threaded=True)

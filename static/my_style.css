@@ -84,3 +84,7 @@ hr {
   margin-bottom: auto;
   display: block;
 }
+
+.clickable{
+  cursor:pointer;
+}

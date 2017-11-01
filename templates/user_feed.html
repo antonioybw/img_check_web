@@ -4,6 +4,7 @@
 <head>
   <link rel="stylesheet" media="screen" href = "{{ url_for('static', filename='bootstrap.min.css') }}">
   <link rel="stylesheet" media="screen" href = "{{ url_for('static', filename='my_style.css') }}">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
   <meta name="viewport" content = "width=device-width, initial-scale=1.0">
   <title> User feed, detected image</title>
@@ -14,12 +15,12 @@
   </style>
 </head>
 
-<body>
+<body onload="startTime()">
 
 <div class="container-fluid">
   <!-- <div class="row"> -->
     <center style="padding-bottom: 20px">
-    <h5 class="display-4">User Feed Deteced Image Check</h5>
+    <h5 class="display-4">User Feed Detected Image Check</h5>
     <br>
     <br>
       <span class="lead">Current Time: </span><span id="time"></span>
@@ -104,20 +105,34 @@
     console.log("after print");
 
     function update_db_display(db_docs,type) {
+      if(type=='white'){
+        w_docs=db_docs;
+      }
+      else if(type=='black'){
+        b_docs=db_docs;
+      }
+      else{
+        u_docs=db_docs;
+      }
       $('#'+type+'_content').empty();
       for (var i in db_docs){
         $('#'+type+'_content').append(`
+          <div id='db_line_`+type+'_'+i+`'>
           <div class='row'>
             <div class='col-sm-3'>
               <img src='/static/img/`+type+`/new_img_`+db_docs[i]['face_id']+`.png' class='thumb_img'>
             </div>
-            <div class='col-sm-9' style='font-size: small'>
+            <div class='col-sm-7' style='font-size: small'>
               name: `+db_docs[i]['face_name']+`<br>
               id: `+db_docs[i]['face_id']+`<br>
               last detected time:`+db_docs[i]['detected_time_list'][0]+`<br>
             </div>
+            <div class='col-sm-2'>
+              <div class='fa fa-times-circle-o clickable' id="delete_item_`+type+'_'+i+`"></div>
+            </div>
           </div> 
           <hr>
+          </div>
           `);
       };
     }
@@ -265,7 +280,29 @@
     //     $("#block_"+block_num).hide();
     // });
 
+    $('.Content').on('click','.clickable',function (e){
+      console.log("catch delete click")
+      var idClicked = e.target.id;
+      var value_arr=idClicked.split('_');
+      var type=value_arr[2];
+      var idx=value_arr[3];
+      var cur_docs=w_docs;
+      if(type=='white'){
+        var cur_docs=w_docs;
+      }
+      else if(type=='black'){
+        var cur_docs=b_docs;
+      }
+      else{
+        var cur_docs=u_docs;
+      }
+      socket.emit('delete_item', {'delete_type':type,'delete_id':cur_docs[idx]['face_id'], 'line_id':'db_line_'+type+'_'+idx});
 
+    });
+
+    socket.on('finish_delete', function(data) {
+      $('#'+data['line_id']).hide();
+    });
 
 
 
@@ -278,6 +315,26 @@
 
 <script type="text/javascript">
 var today = new Date();
- document.getElementById('time').innerHTML=today;
+function startTime() {
+    var today = new Date();
+    var y = today.getFullYear();
+    var month= today.getMonth();
+    var d = today.getDay();
+    var h = today.getHours();
+    var m = today.getMinutes();
+    var s = today.getSeconds();
+    month=checkTime(month);
+    d=checkTime(d);
+    m = checkTime(m);
+    s = checkTime(s);
+    document.getElementById('time').innerHTML =
+    y+"/"+ month+"/"+d+" , "+h + ":" + m + ":" + s;
+    var t = setTimeout(startTime, 500);
+}
+function checkTime(i) {
+    if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+    return i;
+}
+ // document.getElementById('time').innerHTML=today;
  </script>
 
