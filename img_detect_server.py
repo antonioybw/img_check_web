@@ -170,7 +170,7 @@ def get_img():
   return render_template('detect_img.html',img_list=img_list)
 
 @app.route('/set_time', methods = ['POST']) # 
-def set_passed time():
+def set_passed_time():
   test_start_time=time.time()
   print "time set ! the current start time is:"+ str(test_start_time)
   return "time set page"
