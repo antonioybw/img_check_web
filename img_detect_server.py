@@ -129,42 +129,51 @@ def user_feed():
   # return render_template('user_feed.html',w_dic=w_dic,b_dic=b_dic,u_dic=u_dic)
 
 
+test_start_time= 0
 
-# @app.route('/display', methods = ['GET','POST']) # 
-# def get_img():
-#   subprocess.call('mkdir '+ detect_img_path,shell=True)
-#   if not os.path.exists(detect_img_path):
-#     return "img path not exists"
-#   subprocess.check_output("rm -rf /root/workspace/img_check_web/static/img/*",shell=True)
-#   img_list=find_img_list()
+@app.route('/display', methods = ['GET','POST']) # 
+def get_img():
+  subprocess.call('mkdir '+ detect_img_path,shell=True)
+  if not os.path.exists(detect_img_path):
+    return "img path not exists"
+  subprocess.check_output("rm -rf /root/workspace/img_check_web/static/img/*",shell=True)
+  img_list=find_img_list()
 
-#   if request.method == 'POST':
-#     incoming_jsondata=request.get_json()
-#     message_dict=json.loads(incoming_jsondata)
-#     ### once there's new image uploaded
-#     print " got post from client"
-#     print "image string type is"
-#     print type(message_dict['img_str_list'][0])
-#     subprocess.check_output("rm -rf /root/workspace/img_check_web/static/img/*",shell=True)
-#     if 'img_str_list' in message_dict:
-#       img_base64_list = message_dict['img_str_list']
-#       for idx,item in enumerate(img_base64_list):
-#         if message_dict['img_type']=='basic_base64':
-#           with open('/root/workspace/img_check_web/static/img/new_img'+str(idx)+str(time.time())+'.png', 'w') as img_file:
-#             img_file.write(item.decode('base64'))
-#         else: 
-#           item_b64_dec = base64.b64decode(item)
-#           np_array = numpy.fromstring(item_b64_dec, numpy.uint8) 
-#           np_array = np_array.reshape((160, 160, 3))
-#           misc.imsave('/root/workspace/img_check_web/static/img/new_img'+str(idx)+str(time.time())+'.png', np_array)
+  if request.method == 'POST':
+    passed_time= (time.time()-test_start_time) *1000
+    print "current passed_time is:"+passed_time
+    incoming_jsondata=request.get_json()
+    message_dict=json.loads(incoming_jsondata)
+    ### once there's new image uploaded
+    print " got post from client"
+    print "image string type is"
+    print type(message_dict['img_str_list'][0])
+    subprocess.check_output("rm -rf /root/workspace/img_check_web/static/img/*",shell=True)
+    if 'img_str_list' in message_dict:
+      img_base64_list = message_dict['img_str_list']
+      for idx,item in enumerate(img_base64_list):
+        if message_dict['img_type']=='basic_base64':
+          with open('/root/workspace/img_check_web/static/img/new_img'+str(idx)+str(time.time())+'.png', 'w') as img_file:
+            img_file.write(item.decode('base64'))
+        else: 
+          item_b64_dec = base64.b64decode(item)
+          np_array = numpy.fromstring(item_b64_dec, numpy.uint8) 
+          np_array = np_array.reshape((160, 160, 3))
+          misc.imsave('/root/workspace/img_check_web/static/img/new_img'+str(idx)+str(time.time())+'.png', np_array)
             
-#     if (message_dict['event']=='new_img'):
-#       img_list=find_img_list()
-#       send_to_client={}
-#       send_to_client['client_message']=message_dict
-#       send_to_client['img_list']=img_list
-#       socketio.emit('post detected',send_to_client)
-#   return render_template('detect_img.html',img_list=img_list)
+    if (message_dict['event']=='new_img'):
+      img_list=find_img_list()
+      send_to_client={}
+      send_to_client['client_message']=message_dict
+      send_to_client['img_list']=img_list
+      socketio.emit('post detected',send_to_client)
+  return render_template('detect_img.html',img_list=img_list)
+
+@app.route('/set_time', methods = ['POST']) # 
+def set_passed time():
+  test_start_time=time.time()
+  print "time set ! the current start time is:"+ str(test_start_time)
+  return "time set page"
 
 
 @app.route('/info', methods = ['POST']) # 
