@@ -136,7 +136,7 @@ def get_img():
   subprocess.call('mkdir '+ detect_img_path,shell=True)
   if not os.path.exists(detect_img_path):
     return "img path not exists"
-  subprocess.check_output("rm -rf /root/workspace/img_check_web/static/img/*",shell=True)
+  subprocess.check_output("rm -rf /root/workspace/img_check_web/static/img/detected/*",shell=True)
   img_list=find_img_list()
 
   if request.method == 'POST':
@@ -148,18 +148,18 @@ def get_img():
     print " got post from client"
     print "image string type is"
     print type(message_dict['img_str_list'][0])
-    subprocess.check_output("rm -rf /root/workspace/img_check_web/static/img/*",shell=True)
+    subprocess.check_output("rm -rf /root/workspace/img_check_web/static/img/detected/*",shell=True)
     if 'img_str_list' in message_dict:
       img_base64_list = message_dict['img_str_list']
       for idx,item in enumerate(img_base64_list):
         if message_dict['img_type']=='basic_base64':
-          with open('/root/workspace/img_check_web/static/img/new_img'+str(idx)+str(time.time())+'.png', 'w') as img_file:
+          with open('/root/workspace/img_check_web/static/img/detected/new_img'+str(idx)+str(time.time())+'.png', 'w') as img_file:
             img_file.write(item.decode('base64'))
         else: 
           item_b64_dec = base64.b64decode(item)
           np_array = numpy.fromstring(item_b64_dec, numpy.uint8) 
           np_array = np_array.reshape((160, 160, 3))
-          misc.imsave('/root/workspace/img_check_web/static/img/new_img'+str(idx)+str(time.time())+'.png', np_array)
+          misc.imsave('/root/workspace/img_check_web/static/img/detected/new_img'+str(idx)+str(time.time())+'.png', np_array)
             
     if (message_dict['event']=='new_img'):
       img_list=find_img_list()
