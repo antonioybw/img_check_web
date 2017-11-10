@@ -13,10 +13,10 @@ body{
   background: -webkit-linear-gradient(left, #22d686, #24d3d3, #22d686, #24d3d3);
   background: linear-gradient(to right, #22d686, #24d3d3, #22d686, #24d3d3);
   background-size: 600% 100%;
-  -webkit-animation: HeroBG 20s ease infinite;
-          animation: HeroBG 20s ease infinite;
+/*  -webkit-animation: HeroBG 20s ease infinite;
+          animation: HeroBG 20s ease infinite;*/
 }
-
+/*
 @-webkit-keyframes HeroBG {
   0% {
     background-position: 0 0;
@@ -40,7 +40,7 @@ body{
     background-position: 0 0;
   }
 }
-
+*/
 
 .panel {
   border-radius: 5px;
@@ -188,12 +188,12 @@ label {
   padding: 14px 0;
   text-transform: uppercase;
   border: none;
-  border-radius: 0px;
+  border-radius: 1px;
   box-shadow: none;
 }
 .btn-login:hover,
 .btn-login:focus {
-  color: #fff;
+  color: #ffffff;
   background-color: #2D3B55;
 }
 .forgot-password {
@@ -216,11 +216,11 @@ label {
   padding: 14px 0;
   text-transform: uppercase;
   border: none;
-  border-radius: 0px;
+  border-radius: 1px;
   box-shadow: none;
 }
 .btn-register:hover,
 .btn-register:focus {
-  color: #fff;
+  color: #ffffff;
   background-color: #2D3B55;
 }
