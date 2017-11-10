@@ -16,6 +16,7 @@ import pymongo
 from pymongo import MongoClient
 import urllib
 from bson import ObjectId
+import hashlib, uuid
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -42,7 +43,7 @@ unknownlist=db.unknown_list_test
 user_db_username = urllib.quote_plus('user_admin')
 user_db_password = urllib.quote_plus('securitai_user135')
 user_db_client = MongoClient("mongodb://%s:%s@184.105.242.130:19777/user_db"%(user_db_username, user_db_password))
-user_db= client.user_db
+user_db= user_db_client.user_db
 
 
 def init_path():
@@ -306,11 +307,30 @@ def delete_db_item(message):
 def register_receive(message):
     print "receive register"
     print message
-    # try:
-    user_db.user_account.insert_one(message)
-    # except:
-    #   print "error in insert"
-    #   return
+    salt=uuid.uuid4().hex
+    message['salt']=salt
+    hashed_password = hashlib.sha256(message['password']+salt).hexdigest()
+    message['password']=hashed_password
+    user_data_uuid=uuid.uuid4().hex
+    message['face_doc_id']=message['username']+'-facelist-'user_data_uuid
+    message['user_FC_collection']=message['username']+'-FC-'user_data_uuid
+    try:
+      user_db.user_account.insert_one(message)
+    except:
+      print "error in user account insert"
+      return
+    new_face_list={
+      "face_doc_id"         : message['face_doc_id'],
+      "white_list"          : [],
+      "black_list"          : [],
+      "unknown_list"        : [],
+      "user_FC_collection"  : message['user_FC_collection']
+    }
+    try:
+      user_db.user_to_face.insert_one(new_face_list)
+    except:
+      print "error in user_to_face insert"
+      return
     emit('success_register', {user_db.user_account.find_one({'username':message['username']})})
     # emit('my response', {'data': message['data']})
 
