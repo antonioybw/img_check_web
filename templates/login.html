@@ -34,19 +34,19 @@
                     <label for="checkbox1">Remember Me</label>   
                   </div>
                   <div class="col-xs-6 form-group pull-right">     
-                        <input type="submit" name="login-submit" id="login-submit" tabindex="4" class="form-control btn-login" value="Log In">
+                        <input type="submit" name="login-submit" id="login-submit" tabindex="4" class="form-control btn btn-login" value="Log In">
                   </div>
               </form>
               <form id="register-form" action="#" method="post" role="form" style="display: none;">
                 <h2>REGISTER</h2>
                   <div class="form-group">
-                    <input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Username">
+                    <input type="text" name="username" id="register_username" tabindex="1" class="form-control" placeholder="Username">
                   </div>
                   <div class="form-group">
-                    <input type="email" name="email" id="email" tabindex="1" class="form-control" placeholder="Email Address">
+                    <input type="email" name="email" id="register_email" tabindex="1" class="form-control" placeholder="Email Address">
                   </div>
                   <div class="form-group">
-                    <input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Password">
+                    <input type="password" name="password" id="register_password" tabindex="2" class="form-control" placeholder="Password">
                   </div>
                   <div class="form-group">
                     <input type="password" name="confirm-password" id="confirm-password" tabindex="2" class="form-control" placeholder="Confirm Password">
@@ -54,7 +54,7 @@
                   <div class="form-group">
                     <div class="row">
                       <div class="col-sm-6 col-sm-offset-3">
-                        <input  name="register-submit" id="register-submit" tabindex="4" class="form-control btn-register" value="Register Now">
+                        <input  name="register-submit" id="register-submit" tabindex="4" class="form-control btn btn-register" value="Register Now">
                       </div>
                     </div>
                   </div>
@@ -114,9 +114,9 @@
   });
 
   $('#register-submit').click(function(e){
-    var user_name=$('#username').val();
-    var password=$('#password').val();
-    var email=$('#email').val();
+    var user_name=$('#register_username').val();
+    var password=$('#register_password').val();
+    var email=$('#register_email').val();
     console.log(user_name);
     console.log(password);
     console.log(email);

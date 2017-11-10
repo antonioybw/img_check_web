@@ -178,10 +178,10 @@ label {
   border-color: #ccc;
 }
 .btn-login {
-  background-color: !important;
+  background-color: #E8E9EC !important;
   outline: none !important;
-  color: #2D3B55;
-  font-size: 14px;
+  color: #2D3B55 !important;
+  font-size: 14px !important;
   height: auto !important;
   font-weight: normal !important;
   padding: 14px 0 !important;
@@ -206,10 +206,10 @@ label {
 }
 
 .btn-register {
-  background-color: !important;
+  background-color: #E8E9EC !important;
   outline: none !important;
-  color: #2D3B55;
-  font-size: 14px;
+  color: #2D3B55 !important;
+  font-size: 14px !important;
   height: auto !important;
   font-weight: normal !important;
   padding: 14px 0 !important;
