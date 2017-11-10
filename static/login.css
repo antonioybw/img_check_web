@@ -192,7 +192,7 @@ label {
 }
 .btn-login:hover,
 .btn-login:focus {
-  color: #ffffff;
+  color: #ffffff !important;
   background-color: #2D3B55;
 }
 .forgot-password {
@@ -220,7 +220,7 @@ label {
 }
 .btn-register:hover,
 .btn-register:focus {
-  color: #ffffff;
+  color: #ffffff !important;
   background-color: #2D3B55;
 }
 
