@@ -10,9 +10,9 @@ body {
 
 body{
   width: 100%;
-/*  background: -webkit-linear-gradient(left, #22d686, #24d3d3, #22d686, #24d3d3);*/
-/*  background: linear-gradient(to right, #22d686, #24d3d3, #22d686, #24d3d3);*/
-/*  background-size: 600% 100%;*/
+  background: -webkit-linear-gradient(left, #22d686, #24d3d3, #22d686, #24d3d3);
+  background: linear-gradient(to right, #22d686, #24d3d3, #22d686, #24d3d3);
+  background-size: 600% 100%;
 /*  -webkit-animation: HeroBG 20s ease infinite;
           animation: HeroBG 20s ease infinite;*/
 }
@@ -50,9 +50,9 @@ label {
 }
 .panel-login {
    border: none;
-/*  -webkit-box-shadow: 0px 0px 49px 14px rgba(188,190,194,0.39);
+  -webkit-box-shadow: 0px 0px 49px 14px rgba(188,190,194,0.39);
   -moz-box-shadow: 0px 0px 49px 14px rgba(188,190,194,0.39);
-  box-shadow: 0px 0px 49px 14px rgba(188,190,194,0.39);*/
+  box-shadow: 0px 0px 49px 14px rgba(188,190,194,0.39);
   }
 .panel-login .checkbox input[type=checkbox]{
   margin-left: 0px;
