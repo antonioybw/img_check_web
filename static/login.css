@@ -188,7 +188,7 @@ label {
   padding: 14px 0;
   text-transform: uppercase;
   border: none;
-  border-radius: 1px;
+  border-radius: 0px !important;
   box-shadow: none;
 }
 .btn-login:hover,
@@ -216,11 +216,15 @@ label {
   padding: 14px 0;
   text-transform: uppercase;
   border: none;
-  border-radius: 1px;
+  border-radius: 0px !important;
   box-shadow: none;
 }
 .btn-register:hover,
 .btn-register:focus {
   color: #ffffff;
   background-color: #2D3B55;
+}
+
+.panel-body{
+  background-color: #b4c7ea;
 }
