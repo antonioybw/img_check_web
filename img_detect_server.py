@@ -38,6 +38,11 @@ whitelist=db.white_list_test
 blacklist=db.black_list_test
 unknownlist=db.unknown_list_test
 
+user_db_username = urllib.quote_plus('user_admin')
+user_db_password = urllib.quote_plus('securitai_user135')
+user_db_client = MongoClient("mongodb://%s:%s@184.105.242.130:19777/user_db"%(user_db_username, user_db_password))
+user_db= client.user_db
+
 
 def init_path():
   path_all=[detect_img_path,white_img_path,black_img_path,unknown_img_path]
@@ -300,6 +305,12 @@ def delete_db_item(message):
 def register_receive(message):
     print "receive register"
     print message
+    try:
+      user_db.user_account.insert_one(message)
+    except:
+      print "error in insert"
+      return
+    emit('success_register', {user_db.user_account.find_one({'username':message['username']})})
     # emit('my response', {'data': message['data']})
 
 

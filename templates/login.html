@@ -120,9 +120,13 @@
     console.log(user_name);
     console.log(password);
     console.log(email);
-
-    // socket.emit('register', {'user_name':user_name,'password':password,'email':email});
+    socket.emit('register', {'user_name':user_name,'password':password,'email':email});
   });
+
+  socket.on('success_register', function(data) {
+      // $('#'+data['line_id']).hide();
+      console.log(data);
+    });
 
 // });
 </script>
