@@ -296,6 +296,12 @@ def delete_db_item(message):
   db_todelete.delete_one({'_id':ObjectId(message['delete_id'])})
   emit('finish_delete', {'line_id': message['line_id']})
 
+@socketio.on('register')
+def register_receive(message):
+    print "receive register"
+    print message
+    # emit('my response', {'data': message['data']})
+
 
 
 if __name__ == '__main__':
