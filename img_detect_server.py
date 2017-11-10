@@ -190,6 +190,10 @@ def get_message():
 def show():
   return 'haha'
 
+@app.route('/login')
+def login():
+  return render_template('login.html')
+
 @app.route('/pic', methods = ['POST']) # 
 def get_normal_pic():
   if request.method == 'POST':
