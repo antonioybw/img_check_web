@@ -180,7 +180,7 @@ label {
 .btn-login {
   background-color: !important;
   outline: none !important;
-  color: #2D3B55 !important;
+  color: #2D3B55;
   font-size: 14px;
   height: auto !important;
   font-weight: normal !important;
@@ -208,7 +208,7 @@ label {
 .btn-register {
   background-color: !important;
   outline: none !important;
-  color: #2D3B55 !important;
+  color: #2D3B55;
   font-size: 14px;
   height: auto !important;
   font-weight: normal !important;
