@@ -29,9 +29,10 @@ unknown_img_path='/root/workspace/img_check_web/static/img/unknown/'
 
 #### database connection####
 
+
 username = urllib.quote_plus('face_table_admin')
 password = urllib.quote_plus('securitai_face135')
-client = MongoClient("mongodb://%s:%s@107.181.94.10:19777/face_db"%(username, password))
+client = MongoClient("mongodb://%s:%s@184.105.242.130:19777/face_db"%(username, password))
 db= client.face_db
 whitelist=db.white_list_test
 blacklist=db.black_list_test
@@ -140,8 +141,12 @@ def get_img():
   img_list=find_img_list()
 
   if request.method == 'POST':
-    passed_time= (time.time()-test_start_time) *1000
-    print "current passed_time is:"+passed_time
+    global test_start_time
+    print "start time is"+str(test_start_time)
+    cur_time=time.time()
+    print "current time is"+str(cur_time)
+    passed_time= (cur_time-test_start_time)
+    print "current passed_time is:"+ str(passed_time)
     incoming_jsondata=request.get_json()
     message_dict=json.loads(incoming_jsondata)
     ### once there's new image uploaded
@@ -152,10 +157,6 @@ def get_img():
     if 'img_str_list' in message_dict:
       img_base64_list = message_dict['img_str_list']
       for idx,item in enumerate(img_base64_list):
-        if message_dict['img_type']=='basic_base64':
-          with open('/root/workspace/img_check_web/static/img/detected/new_img'+str(idx)+str(time.time())+'.png', 'w') as img_file:
-            img_file.write(item.decode('base64'))
-        else: 
           item_b64_dec = base64.b64decode(item)
           np_array = numpy.fromstring(item_b64_dec, numpy.uint8) 
           np_array = np_array.reshape((160, 160, 3))
@@ -171,6 +172,7 @@ def get_img():
 
 @app.route('/set_time', methods = ['POST']) # 
 def set_passed_time():
+  global test_start_time
   test_start_time=time.time()
   print "time set ! the current start time is:"+ str(test_start_time)
   return "time set page"
