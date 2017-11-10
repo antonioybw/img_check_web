@@ -1,5 +1,5 @@
-@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,100,700,500);
-
+/*@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,100,700,500);
+*/
 body {
   padding-top: 90px;
   background:#F7F7F7;
@@ -8,7 +8,7 @@ body {
   font-weight:100;
 }
 
-body{
+body {
   background: #007991;  /* fallback for old browsers */
   background: -webkit-linear-gradient(to right, #78ffd6, #007991);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to right, #78ffd6, #007991); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
@@ -178,7 +178,7 @@ label {
   border-color: #ccc;
 }
 .btn-login {
-  background-color: #E8E9EC;
+  background-color: #E8E9EC !important;
   outline: none !important;
   color: #2D3B55;
   font-size: 14px !important;
@@ -206,7 +206,7 @@ label {
 }
 
 .btn-register {
-  background-color: #E8E9EC;
+  background-color: #E8E9EC !important;
   outline: none !important;
   color: #2D3B55;
   font-size: 14px !important;

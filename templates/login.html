@@ -8,6 +8,9 @@
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
   <meta name="viewport" content = "width=device-width, initial-scale=1.0">
   <title> Login Form</title>
+  <style>
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+</style>
 
 </head>
 
@@ -34,7 +37,8 @@
                     <label for="checkbox1">Remember Me</label>   
                   </div>
                   <div class="col-xs-6 form-group pull-right">     
-                        <input type="submit" name="login-submit" id="login-submit" tabindex="4" class="form-control btn btn-login" value="Log In">
+                        <button type="submit" name="login-submit" id="login-submit" tabindex="4" class="form-control btn btn-login" value="Log In">
+                        </button>
                   </div>
               </form>
               <form id="register-form" action="#" method="post" role="form" style="display: none;">
@@ -49,12 +53,13 @@
                     <input type="password" name="password" id="register_password" tabindex="2" class="form-control" placeholder="Password">
                   </div>
                   <div class="form-group">
-                    <input type="password" name="confirm-password" id="confirm-password" tabindex="2" class="form-control" placeholder="Confirm Password">
+                    <input type="password" name="confirm-password" id="register_confirm_password" tabindex="2" class="form-control" placeholder="Confirm Password">
                   </div>
                   <div class="form-group">
                     <div class="row">
                       <div class="col-sm-6 col-sm-offset-3">
-                        <input  name="register-submit" id="register-submit" tabindex="4" class="form-control btn btn-register" value="Register Now">
+                        <button name="register-submit" id="register-submit" tabindex="4" class="form-control btn btn-register" value="Register Now">
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -117,6 +122,15 @@
     var user_name=$('#register_username').val();
     var password=$('#register_password').val();
     var email=$('#register_email').val();
+    var confirm=$('#register_confirm_password').val();
+    if(password!=confirm){
+      console.log("pass not equal");
+      return;
+    }
+    if(email.find('@')==-1){
+      console.log("pass not equal");
+      return;
+    }
     console.log(user_name);
     console.log(password);
     console.log(email);
@@ -125,6 +139,7 @@
 
   socket.on('success_register', function(data) {
       // $('#'+data['line_id']).hide();
+      console.log('success_register');
       console.log(data);
     });
 
