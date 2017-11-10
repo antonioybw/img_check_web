@@ -77,7 +77,7 @@
   </div>
 </div>
 
-</body>
+
 
 <footer>
     <div class="container">
@@ -86,6 +86,7 @@
         </div>   
     </div>
 </footer>
+</body>
 
 
 
@@ -122,6 +123,10 @@
     var user_name=$('#username').val();
     var password=$('#password').val();
     var email=$('#email').val();
+    console.log(user_name);
+    console.log(password);
+    console.log(email);
+
     socket.emit('register', {'user_name':user_name,'password':password,'email':email});
   });
 
