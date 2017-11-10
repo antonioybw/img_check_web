@@ -178,17 +178,17 @@ label {
   border-color: #ccc;
 }
 .btn-login {
-  background-color: #E8E9EC;
-  outline: none;
-  color: #2D3B55;
+  background-color: !important;
+  outline: none !important;
+  color: #2D3B55 !important;
   font-size: 14px;
-  height: auto;
-  font-weight: normal;
-  padding: 14px 0;
-  text-transform: uppercase;
-  border: none;
+  height: auto !important;
+  font-weight: normal !important;
+  padding: 14px 0 !important;
+  text-transform: uppercase !important;
+  border: none !important;
   border-radius: 0px !important;
-  box-shadow: none;
+  box-shadow: none !important;
 }
 .btn-login:hover,
 .btn-login:focus {
@@ -206,17 +206,17 @@ label {
 }
 
 .btn-register {
-  background-color: #E8E9EC;
-  outline: none;
-  color: #2D3B55;
+  background-color: !important;
+  outline: none !important;
+  color: #2D3B55 !important;
   font-size: 14px;
-  height: auto;
-  font-weight: normal;
-  padding: 14px 0;
-  text-transform: uppercase;
-  border: none;
+  height: auto !important;
+  font-weight: normal !important;
+  padding: 14px 0 !important;
+  text-transform: uppercase !important;
+  border: none !important;
   border-radius: 0px !important;
-  box-shadow: none;
+  box-shadow: none !important;
 }
 .btn-register:hover,
 .btn-register:focus {
