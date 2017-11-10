@@ -42,7 +42,8 @@
                   </div>
               </form>
               <form id="register-form" action="#" method="post" role="form" style="display: none;">
-                <h2>REGISTER</h2>
+                <h2>REGISTER</h2><span id='notification-warning' class="fa fa-exclamation-triangle" hidden="true">Password not same</span>
+                <span id='notification-success' class="fa fa-check-circle-o" hidden="true">Register successfully, redirecting to Log In</span>
                   <div class="form-group">
                     <input type="text" name="username" id="register_username" tabindex="1" class="form-control" placeholder="Username">
                   </div>
@@ -124,11 +125,15 @@
     var email=$('#register_email').val();
     var confirm=$('#register_confirm_password').val();
     if(password!=confirm){
+      $("#notification-warning").fadeIn(100);
+      $("#notification-warning").delay(1000).fadeOut(100);
       console.log("pass not equal");
+      
       return;
     }
     if(email.indexOf('@')==-1){
       console.log("pass not equal");
+      
       return;
     }
     console.log(user_name);
@@ -141,6 +146,7 @@
       // $('#'+data['line_id']).hide();
       console.log('success_register');
       console.log(data);
+      window.location.href = '/login';
     });
 
 // });
