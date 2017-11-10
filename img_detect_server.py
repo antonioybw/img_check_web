@@ -312,8 +312,8 @@ def register_receive(message):
     hashed_password = hashlib.sha256(message['password']+salt).hexdigest()
     message['password']=hashed_password
     user_data_uuid=uuid.uuid4().hex
-    message['face_doc_id']=message['username']+'-facelist-'user_data_uuid
-    message['user_FC_collection']=message['username']+'-FC-'user_data_uuid
+    message['face_doc_id']=message['user_name']+'-facelist-'+user_data_uuid
+    message['user_FC_collection']=message['user_name']+'-FC-'+user_data_uuid
     try:
       user_db.user_account.insert_one(message)
     except:
@@ -331,7 +331,7 @@ def register_receive(message):
     except:
       print "error in user_to_face insert"
       return
-    emit('success_register', {user_db.user_account.find_one({'username':message['username']})})
+    emit('success_register', {user_db.user_account.find_one({'username':message['user_name']})})
     # emit('my response', {'data': message['data']})
 
 
