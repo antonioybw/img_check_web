@@ -4,6 +4,7 @@
 <head>
   
   <link rel="stylesheet" media="screen" href = "{{ url_for('static', filename='login.css') }}">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
   <meta name="viewport" content = "width=device-width, initial-scale=1.0">
@@ -169,7 +170,7 @@
       $("#register-success").delay(2000).fadeOut(100);
       setTimeout(function(){
         window.location.href = '/login'
-      }, 2000);
+      }, 1500);
   });
 
   socket.on('success_login', function(data) {
@@ -179,7 +180,7 @@
       $("#login-success").delay(2000).fadeOut(100);
       setTimeout(function(){
         window.location.href = '/'
-      }, 2000);
+      }, 1500);
   });
 
   socket.on('wrong_password', function(data) {
