@@ -354,7 +354,7 @@ def register_receive(message):
         emit('wrong_password', {'username':message['user_name']})
     except:
       print "access db data error"
-      emit('web internal error,please try later', {'username':message['user_name']})
+      emit('web internal error,please try later', {'user_name':message['user_name']})
 
 
 
