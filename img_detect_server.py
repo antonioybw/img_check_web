@@ -348,7 +348,7 @@ def register_receive(message):
       user_input_password=message['password']
       user_salt=user_account_data['salt']
       db_hashed_password=user_account_data['password']
-      if (hashlib.sha256(user_input_password+user_salt)==db_hashed_password):
+      if (hashlib.sha256(user_input_password+user_salt).hexdigest()==db_hashed_password):
         emit('success_login', {'username':message['user_name']})
       else:
         emit('wrong_password', {'username':message['user_name']})
