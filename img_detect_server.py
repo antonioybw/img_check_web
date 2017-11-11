@@ -336,6 +336,26 @@ def register_receive(message):
     emit('success_register', {'username':message['user_name']})
     # emit('my response', {'data': message['data']})
 
+@socketio.on('login')
+def register_receive(message):
+    print "receive login"
+    print message
+    try:
+      user_account_data=user_db.user_account.find_one({'user_name':message['user_name']});
+      if(user_account_data==None):
+        emit('user_name_not_found', {'username':message['user_name']})
+        return
+      user_input_password=message['password']
+      user_salt=user_account_data['salt']
+      db_hashed_password=user_account_data['password']
+      if (hashlib.sha256(user_input_password+user_salt)==db_hashed_password):
+        emit('success_login', {'username':message['user_name']})
+      else:
+        emit('wrong_password', {'username':message['user_name']})
+    except:
+      print "access db data error"
+      emit('web internal error,please try later', {'username':message['user_name']})
+
 
 
 if __name__ == '__main__':
